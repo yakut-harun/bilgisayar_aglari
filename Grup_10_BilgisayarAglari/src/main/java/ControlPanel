@@ -1,0 +1,77 @@
+package control;
+import net.floodlightcontroller.packet.TCP;
+import org.projectfloodlight.openflow.types.IPv4Address;
+public class control {
+
+    public static void main(String[] args) {
+    
+    private int clientPort;
+    private int serverPort;
+
+    public static TCPConnection makeTCPConnection(TCP tcp, IPv4Address serverIp) {
+        TCPConnection baglanti = new TCPConnection();
+        baglanti.serverAddr = serverIp;
+        baglanti.clientPort = tcp.getSourcePort().getPort();
+        baglanti.serverPort = tcp.getDestinationPort().getPort();
+        return baglanti;
+    }
+
+    public static TCPConnection makeTCPConnection(TCP tcp, IPv4Address src, IPv4Address dst) {
+        TCPConnection baglanti = new TCPConnection();
+        baglanti.clientAddr = src;
+        baglanti.serverAddr = dst;
+        baglanti.clientPort = tcp.getSourcePort().getPort();
+        baglanti.serverPort = tcp.getDestinationPort().getPort();
+        return baglanti;
+    }
+
+    public static TCPConnection makeReverseTCPConnection(TCP tcp, IPv4Address src, IPv4Address dst) {
+        TCPConnection baglanti = new TCPConnection();
+        baglanti.clientAddr = dst;
+        baglanti.serverAddr = src;
+        baglanti.clientPort = tcp.getDestinationPort().getPort();
+        baglanti.serverPort = tcp.getSourcePort().getPort();
+        return baglanti;
+    }
+
+    public void setClientAddr(IPv4Address clientAddr) {
+        this.clientAddr = clientAddr;
+    }
+
+    public IPv4Address getServerAddr() {
+        return serverAddr;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        TCPConnection key = (TCPConnection) o;
+
+        if (clientPort != key.clientPort) {
+            return false;
+        }
+        if (serverPort != key.serverPort) {
+            return false;
+        }
+        return serverAddr.equals(key.serverAddr);
+    }
+
+    @Override
+    public int hashCode() {
+        int sonuc = serverAddr.hashCode();
+        sonuc = 31 * sonuc + clientPort;
+        sonuc = 31 * sonuc + serverPort;
+        return sonuc;
+    }
+
+    @Override
+    public String toString() {
+        return "[TCPConnection]" + " clientAddr:" + clientAddr + " serverAddr:" + serverAddr + " clientPort=" + clientPort + " serverPort=" + serverPort;
+    }
+}
